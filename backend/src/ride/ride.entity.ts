@@ -1,7 +1,8 @@
 import { Customer } from "../customer/customer.entity";
 import { Driver } from "../driver/driver.entity";
+import { Location } from "../types";
 
-export class Ride{
+export class RideEntity{
 
     rideId: string;
 
@@ -9,7 +10,9 @@ export class Ride{
 
     customer: Customer; // colocar apenas o id
 
-    destination: string;
+    origin: Location;
+
+    destination: Location;
 
     distance: number;
 

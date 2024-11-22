@@ -1,4 +1,4 @@
-export class Driver{
+export class DriverEntity{
 
     driverId: string;
 
