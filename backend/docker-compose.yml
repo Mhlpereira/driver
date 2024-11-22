@@ -1,9 +1,6 @@
-version: '3.8'
-
 services:
   postgres:
-    image: postgres:15
-    container_name: shopper_container
+    image: postgres:15-alpine
     restart: always
     environment:
       POSTGRES_DB: shopperdb

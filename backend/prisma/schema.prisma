@@ -12,3 +12,31 @@ datasource db {
   provider = "postgresql"
   url =  postgresql://@shopper_container:5432/shopperdb
 }
+
+model Customer {
+  customer_id  String  @id @default(uuid())
+  name String 
+  rides Ride[]?
+}
+
+model Driver{
+  driver_id String @id @default(autoincrement())
+  name String
+  description String
+  car String
+  rating String //podendo muda
+  tax Number
+  minKm Number
+  rides Ride[]?
+}
+
+model Ride{
+  ride_id String @id @default(autoincrement())
+  customer Customer
+  origin 
+  destination
+  duration
+  driver Driver
+  value Number
+}
+
