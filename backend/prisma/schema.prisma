@@ -33,9 +33,9 @@ model Driver{
 model Ride{
   ride_id String @id @default(autoincrement())
   customer Customer
-  origin 
-  destination
-  duration
+  origin Location
+  destination Location
+  duration Number
   driver Driver
   value Number
 }
