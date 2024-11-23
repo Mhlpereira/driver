@@ -24,7 +24,7 @@ model Driver{
   name String
   description String
   car String
-  rating String //podendo muda
+  rating String //podendo mudar
   tax Number
   minKm Number
   rides Ride[]?
