@@ -18,9 +18,11 @@ export class DistanceMatrix {
                 data.rows[0].elements.length > 0 &&
                 data.rows[0].elements[0].status === "OK") {
                 const distanceDuration = data.rows[0].elements[0];
+                const distanceKm = distanceDuration.distance.value/1000
+                const durationMin = distanceDuration.duration.value/60
                 return {
-                    distance: distanceDuration.distance.value, //em metro
-                    duration: distanceDuration.duration.value //em segundos
+                    distance: distanceKm,
+                    duration: durationMin
                 };
             } else {
                 throw new Error("Dados insuficientes ou inválidos retornados pela API.");

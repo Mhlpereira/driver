@@ -32,6 +32,7 @@ model Driver{
 
 model Ride{
   ride_id String @id @default(autoincrement())
+  date DateTime
   customer Customer
   origin Location
   destination Location

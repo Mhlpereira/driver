@@ -17,7 +17,6 @@ export class DriverService {
         const addressD = await geocode.adressConvert(destination);
 
         const distanceTime = matrix.rideDistance(addressO, addressD);
-
         return distanceTime;
     }
 
@@ -26,14 +25,15 @@ export class DriverService {
         try {
             const drivers = prisma.driver.findall();
 
-            const ridePrice = drivers.map((driver: { tax: number; id: string; name: string; car: string; rating: string; }) => {
-                const price =  driver.tax * (distanceTime.distance/1000); //trocar para ponto flutuando e adicionar math.ceil
-                const duration = (distanceTime.duration/60);
+            const ridePrice = drivers.map((driver: { tax: number; id: string; name: string; car: string; rating: string; minKm: number}) => {
+                const price =  driver.tax * distanceTime.distance //trocar para ponto flutuando e adicionar math.ceil
+                const duration = distanceTime.duration
                 return {
                     driverId: driver.id,
                     driverName: driver.name,
                     driverCar: driver.car,
                     driverRating: driver.rating,
+                    driverMinKm: driver.minKm,
                     price,
                     duration
                 }
