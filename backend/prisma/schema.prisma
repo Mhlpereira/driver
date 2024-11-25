@@ -13,13 +13,13 @@ datasource db {
    url = "postgresql://user:123456@localhost:5432/shopperdb"
 }
 
-model Customer {
+model customer {
   customer_id  Int  @id @default(autoincrement())
   name String 
   rides Ride[]
 }
 
-model Driver{
+model driver{
   driver_id Int @id @default(autoincrement())
   name String
   description String
@@ -30,7 +30,7 @@ model Driver{
   rides Ride[]
 }
 
-model Ride{
+model ride{
   ride_id Int @id @default(autoincrement())
   date DateTime @default(now())
   customer_id Int

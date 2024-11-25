@@ -24,3 +24,4 @@ to do 25
     verificar a possibilidade de passar o id do motorista selecionado por slug ou colocar para digitar o id
 }
 - tratamento de erro necessita ser enviado para tela do usuário.
+- passar no json do backend os comando de migrate do prisma
