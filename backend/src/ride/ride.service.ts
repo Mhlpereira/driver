@@ -12,24 +12,17 @@ export class RideService{
     
     constructor(private driverService: DriverService) { }
 
-    async createRide(createRideDTO: CreateRideDTO) {
+    async confirmRide(createRideDTO: CreateRideDTO) {
        
         try{
             const { origin, destination, driverId, customerId } = createRideDTO;
 
             const distanceTime =  await this.driverService.calculateDistanceAndTime(origin, destination);
 
-            const driverWithPrice = await this.driverService.getAllDrivers(distanceTime);
+            const driverWithPrice = await this.driverService.listAllDrivers(distanceTime);
 
             const selectDriver = driverWithPrice.find(driver => driver.driverId === driverId);
 
-            if(!selectDriver){
-                throw new Error("Motorista não encontrado");
-            }
-
-            if(!customerId){
-                throw new Error("Usuário não validado")
-            }
             const ride = await prisma.ride.create({
                 data:{
                     customerId,
@@ -71,7 +64,7 @@ export class RideService{
                 }
             });
 
-            const formattedRides = customerRides.map((ride) => ({ //verificar esse código amanhã
+            const formattedRides = customerRides.map((ride) => ({ 
                 id: ride.id,
                 date: format(new Date(ride.date), 'dd/MM/yyyy HH:mm:ss', { locale: ptBR }),
                 origin: ride.origin,

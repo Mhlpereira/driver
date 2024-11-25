@@ -5,7 +5,7 @@ const googleMapClient = new Client({});
 
 export class DistanceMatrix {
 
-    async rideDistance(origin: LatLng[], destination: LatLng[]): Promise<{ distance: number, duration: number }> {
+    async rideDistance(origin: LatLng[], destination: LatLng[]): Promise<{ data: any, distance: number, duration: number }> {
         return googleMapClient.distancematrix({
             params: {
                 origins: origin,
@@ -21,15 +21,16 @@ export class DistanceMatrix {
                 const distanceKm = distanceDuration.distance.value/1000
                 const durationMin = distanceDuration.duration.value/60
                 return {
+                    data,
                     distance: distanceKm,
                     duration: durationMin
                 };
             } else {
-                throw new Error("Dados insuficientes ou inválidos retornados pela API.");
+                throw new Error("Erro ao tentar converted a latitude e longitude!");
             }
         }).catch((e) => {
             console.error("Erro ao obter distância e tempo:", e.message);
-            throw Error;
+            throw e;
         });
     }
 }

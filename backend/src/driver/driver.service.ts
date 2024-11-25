@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { DistanceMatrix } from "../google-api/distanceMatrix";
 import { GeocodeServive } from "../google-api/geocode";
-import { CorridaDTO } from "../ride/DTO/corridaDTO";
+import { CorridaDTO } from "./DTO/corridaDTO";
 
 
 const prisma = new PrismaClient();
@@ -21,18 +21,21 @@ export class DriverService {
     }
 
 
-    async getAllDrivers(distanceTime: { distance: number; duration: number; }) { // tentar separar depois o calculo 
+    async listAllDrivers(distanceTime: { distance: number; duration: number; }) { // tentar separar depois o calculo 
         try {
             const drivers = prisma.driver.findall();
 
-            const ridePrice = drivers.map((driver: { tax: number; id: string; name: string; car: string; rating: string; minKm: number}) => {
-                const price =  driver.tax * distanceTime.distance //trocar para ponto flutuando e adicionar math.ceil
-                const duration = distanceTime.duration
+            const ridePrice = drivers.filter((driver: {minKm: number}) => distanceTime.distance >= driver.minKm )
+            .map((driver: {  id: string; name: string; description:string; car: string; rating: string; tax:  number; minKm: number}) => {
+                const price =  Math.ceil(driver.tax * distanceTime.distance); 
+                const duration = distanceTime.duration;
                 return {
                     driverId: driver.id,
                     driverName: driver.name,
+                    driverDesc: driver.description, 
                     driverCar: driver.car,
                     driverRating: driver.rating,
+                    driverTax: driver.tax,
                     driverMinKm: driver.minKm,
                     price,
                     duration

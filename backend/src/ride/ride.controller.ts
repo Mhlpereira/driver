@@ -1,60 +1,61 @@
 import { Request, Response } from "express";
 import { RideService } from "../ride/ride.service";
 import { DriverService } from "../driver/driver.service";
-import { CorridaDTO } from "./DTO/corridaDTO";
+import { CorridaDTO } from "../driver/DTO/corridaDTO";
 import { CreateRideDTO } from "./DTO/create-ride-DTO";
+import { CustomerRidesDTO } from "./DTO/customer-rides-DTO";
 
 
 
 export class RideController {
 
-    private rideService : RideService;
+    private rideService: RideService;
     private driverService: DriverService;
 
     constructor(driverService: DriverService, rideService: RideService) {
         this.driverService = driverService;
         this.rideService = rideService;
-     }
+    }
 
-    async calculateDistance(req: Request, res: Response): Promise<Response> {
+
+
+    async ConfirmRide(req: Request, res: Response): Promise<Response> {
         try {
-            const { origin, destination, customerId}: CorridaDTO = req.body;
+            const createRideDTO: CreateRideDTO = req.body;
 
-            if (!origin || !destination) {
+            if (!createRideDTO.origin || !createRideDTO.destination) {
                 return res.status(400).json({
                     error_code: "INVALID_DATA",
                     error_description: "Os dados fornecidos no corpo da requisição são inválidos"
                 })
             }
 
-            const distanceTime = await this.driverService.calculateDistanceAndTime(origin, destination);
-            const drivers = await this.driverService.getAllDrivers(distanceTime);
-            if (drivers.length <= 0) {
+            const driver = await this.driverService.getDriverById(createRideDTO.driverId);
+            if (!driver) {
                 return res.status(404).json({
-                    "error_code": "FAILED_TO_LIST",
-                    "error_description": "Falha para carregar a lista."
+                    error_code: 'DRIVER_NOT_FOUND',
+                    error_description: 'Motorista não encontrado'
                 })
             }
-            if(distanceTime.distance <= drivers.minKm){
-                return res.status(406).json({
-                    "error_code": "INVALID_DISTANCE",
-                    "error_description": "Quilometragem inválida para o motorista."
-                })
-            }
-            return res.status(200).json({ success: true, description: "Operação realizado com sucesso" ,data: drivers })
+
+            const ride = await this.rideService.confirmRide(createRideDTO);
+
+            return res.status(200).json({ message: "operação realizado com sucesso.", data: ride })
         } catch (e) {
-            console.error("Error ao listar os motoristas", e.message);
-            return res.status(500).json({
-                error_code: "INTERNAL_SERVER_ERROR",
-                error_description: "Um erro inexperado aconteceu"
-            })
+            console.error("Erro ao criar a corrida:", e.message);
+            return res.status(400).json({
+                error_code: "CREATE_RIDE_ERROR",
+                error_description: "Erro ao criar a corrida"
+            });
         }
     }
 
-    async CreateRide(req: Request, res: Response): Promise<Response>{
-        try{
-            const { origin, destination, driverId, customerId} = req.body;
-            
-        }
+    async getAllRidesByUser(req: Request, res: Response): Promise<Response> {
+       const customerRidesDTO: CustomerRidesDTO = req.body;
+
+       //na hora de listar não estou conseguindo colocar como number e está aparecendo com any.
+
+       const list = await this.rideService.getAllRidesByUser(customerRidesDTO.customerIdDTO)
     }
+    
 }
