@@ -15,3 +15,12 @@ to do 24/11
 - fazer validações no dto
 - trocar o controle para driver controller
     
+
+to do 25
+
+- arrumar o ride controller para o controller de listagem aceitar o number e não apenas o any
+- arrumar as rotas
+- fazer o front-end SPA {
+    verificar a possibilidade de passar o id do motorista selecionado por slug ou colocar para digitar o id
+}
+- tratamento de erro necessita ser enviado para tela do usuário.

@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { RideService } from "../ride/ride.service";
 import { DriverService } from "../driver/driver.service";
-import { CorridaDTO } from "../driver/DTO/corridaDTO";
 import { CreateRideDTO } from "./DTO/create-ride-DTO";
 import { CustomerRidesDTO } from "./DTO/customer-rides-DTO";
 
@@ -51,11 +50,36 @@ export class RideController {
     }
 
     async getAllRidesByUser(req: Request, res: Response): Promise<Response> {
-       const customerRidesDTO: CustomerRidesDTO = req.body;
+        try {
+            const { customerId, driverId }: CustomerRidesDTO = req.body;
 
-       //na hora de listar não estou conseguindo colocar como number e está aparecendo com any.
+            const list = driverId ? this.rideService.getAllRidesByUserAndDriver(customerId, driverId)
+                : this.rideService.getAllRidesByUser(customerId);
 
-       const list = await this.rideService.getAllRidesByUser(customerRidesDTO.customerIdDTO)
+
+            const driver = await this.driverService.getDriverById(driverId);
+            if (!driver) {
+                return res.status(400).json({
+                    error_code: 'INVALID_DRIVER',
+                    error_description: 'Motorista inválido'
+                })
+            }
+
+            if ((await list).rides === 0) {
+                return res.status(400).json({
+                    error_code: 'NO_RIDES_FOUND',
+                    error_description: 'Nenhum registro encontrado'
+                })
+            }
+
+            return res.status(200).json(list)
+        } catch (e) {
+            console.error("Erro ao carregar a lista:", e.message);
+            return res.status(400).json({
+                error_code: "LIST_ERROR",
+                error_description: 'Erro ao listar as corridas'
+            })
+        }
     }
-    
+
 }

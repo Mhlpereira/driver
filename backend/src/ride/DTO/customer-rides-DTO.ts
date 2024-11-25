@@ -1,10 +1,11 @@
-import { IsNotEmpty, IsNumber } from "class-validator"
+import { IsNotEmpty, IsNumber, IsOptional } from "class-validator"
 
 export class CustomerRidesDTO{
 
     @IsNotEmpty({message:"O id de usuário não pode estar vazio!"})
     @IsNumber()
-    customerIdDTO: number
+    customerId: number;
 
-    driverIdDTO?: number
+    @IsOptional()
+    driverId?: number;
 }

@@ -3,7 +3,6 @@ import { CreateRideDTO } from "./DTO/create-ride-DTO";
 import { DriverService } from "../driver/driver.service";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { CustomerRidesDTO } from "./DTO/customer-rides-DTO";
 
 const prisma = new PrismaClient();
 
@@ -47,15 +46,13 @@ export class RideService{
     }
     
 
-    async getAllRidesByUser(customerRidesDTO: CustomerRidesDTO){
+    async getAllRidesByUser(customerId: number){
         try{
-            const { customerIdDTO, driverIdDTO } = customerRidesDTO;
             
             const customerRides = await prisma.ride.findmany({
                 where : {
-                    customerId : customerIdDTO,
-                    ...(driverIdDTO ? {driverId: driverIdDTO} : {})
-                },
+                    customerId : customerId,
+                                },
                 include : {
                     driver: true
                 },
@@ -83,7 +80,47 @@ export class RideService{
                 rides: formattedRides,
             };
         } catch(e){
-            console.error("Erro ao buscar corrida de usuários", e);
+            console.error("Erro ao buscar corrida de usuários", e.message);
+            throw new Error("Não foi possível buscar corrida");
+        }
+    }
+
+    async getAllRidesByUserAndDriver(customerId: number, driverId: number){
+        try{
+            
+            const customerRides = await prisma.ride.findmany({
+                where : {
+                    customerId : customerId,
+                    driverId : driverId
+                },
+                include : {
+                    driver: true
+                },
+                orderBy:{
+                    date: "desc"
+                }
+            });
+
+            const formattedRides = customerRides.map((ride: { id: any; date: string | number | Date; origin: any; destination: any; distance: any; duration: any; driver: { id: any; name: any; }; price: any; }) => ({ 
+                id: ride.id,
+                date: format(new Date(ride.date), 'dd/MM/yyyy HH:mm:ss', { locale: ptBR }),
+                origin: ride.origin,
+                destination: ride.destination,
+                distance: ride.distance,
+                duration: ride.duration,
+                driver: {
+                    id: ride.driver.id,
+                    name: ride.driver.name,
+                },
+                value: ride.price,
+            }));
+
+            return {
+                customer_id: customerRides.customer_id,
+                rides: formattedRides,
+            };
+        } catch(e){
+            console.error("Erro ao buscar corrida de usuários", e.message);
             throw new Error("Não foi possível buscar corrida");
         }
     }
