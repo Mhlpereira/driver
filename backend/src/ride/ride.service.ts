@@ -2,6 +2,8 @@ import { PrismaClient } from "@prisma/client";
 import { CreateRideDTO } from "./DTO/create-ride-DTO";
 import { DriverService } from "../driver/driver.service";
 import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { CustomerRidesDTO } from "./DTO/customer-rides-DTO";
 
 const prisma = new PrismaClient();
 
@@ -52,11 +54,14 @@ export class RideService{
     }
     
 
-    async getRidesByUser(customerId: number){
+    async getAllRidesByUser(customerRidesDTO: CustomerRidesDTO){
         try{
+            const { customerIdDTO, driverIdDTO } = customerRidesDTO;
+            
             const customerRides = await prisma.ride.findmany({
                 where : {
-                    customerId : customerId
+                    customerId : customerIdDTO,
+                    ...(driverIdDTO ? {driverId: driverIdDTO} : {})
                 },
                 include : {
                     driver: true
@@ -81,7 +86,7 @@ export class RideService{
             }));
 
             return {
-                customer_id: customerId,
+                customer_id: customerRides.customer_id,
                 rides: formattedRides,
             };
         } catch(e){

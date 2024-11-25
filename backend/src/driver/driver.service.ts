@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { DistanceMatrix } from "../google-api/distanceMatrix";
 import { GeocodeServive } from "../google-api/geocode";
-import { CorridaDTO } from "./DTO/corridaDTO";
+import { CorridaDTO } from "../ride/DTO/corridaDTO";
 
 
 const prisma = new PrismaClient();
@@ -46,5 +46,10 @@ export class DriverService {
         }
     }
 
+    async getDriverById(driverId: number){
+        return await prisma.driver.findUnique({
+            where: {driverId: driverId}
+        });
+    }
 
 }

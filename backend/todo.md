@@ -8,3 +8,10 @@
 - fazer validações com class-validator
 
 - alterar rating para objeto { avaliação com lógica de nota, descrição}
+
+to do 24/11
+
+- formato de entrega das consultas
+- fazer validações no dto
+- trocar o controle para driver controller
+    

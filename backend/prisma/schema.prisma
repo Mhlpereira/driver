@@ -32,12 +32,15 @@ model Driver{
 
 model Ride{
   ride_id String @id @default(autoincrement())
-  date DateTime
-  customer Customer
+  date DateTime @default(now())
+  userId Number
   origin Location
   destination Location
+  driverId Number
   duration Number
-  driver Driver
-  value Number
+  value float
+
+  customer Customer @relation(fields: [customerId], references: [id])
+  driver Driver     @relation(fields: [driveId], references: [id])
 }
 
