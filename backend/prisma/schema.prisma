@@ -9,38 +9,38 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url =  postgresql://@shopper_container:5432/shopperdb
+   provider = "postgresql" 
+   url = "postgresql://user:123456@localhost:5432/shopperdb"
 }
 
 model Customer {
-  customer_id  String  @id @default(uuid())
+  customer_id  Int  @id @default(autoincrement())
   name String 
-  rides Ride[]?
+  rides Ride[]
 }
 
 model Driver{
-  driver_id String @id @default(autoincrement())
+  driver_id Int @id @default(autoincrement())
   name String
   description String
   car String
-  rating String //podendo mudar
-  tax Number
-  minKm Number
-  rides Ride[]?
+  rating String
+  tax Float
+  minKm Int
+  rides Ride[]
 }
 
 model Ride{
-  ride_id String @id @default(autoincrement())
+  ride_id Int @id @default(autoincrement())
   date DateTime @default(now())
-  userId Number
-  origin Location
-  destination Location
-  driverId Number
-  duration Number
-  value float
+  customer_id Int
+  origin String
+  destination String
+  driver_id Int
+  duration Int
+  value Float
 
-  customer Customer @relation(fields: [customerId], references: [id])
-  driver Driver     @relation(fields: [driveId], references: [id])
+  customer Customer @relation(fields: [customer_id], references: [customer_id])
+  driver Driver     @relation(fields: [driver_id], references: [driver_id])
 }
 

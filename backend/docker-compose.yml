@@ -4,6 +4,7 @@ services:
     restart: always
     environment:
       POSTGRES_DB: shopperdb
-      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: 123456
     ports:
       - "5432:5432"
