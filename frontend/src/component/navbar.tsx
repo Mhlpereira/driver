@@ -19,13 +19,10 @@ export const Navbar = () => {
                 </div>
                 <ul className={menu ? "open" : ""}>
                     <li>
-                        <NavLink to="/drive/estimate">Solicitação de viagem</NavLink>
+                        <NavLink to="/ride/estimate">Solicitação de viagem</NavLink>
                     </li>
                     <li>
-                        <NavLink to="/drive/confirm">Opções de viagem</NavLink>
-                    </li>
-                    <li>
-                        <NavLink to="/drive/:customer_id">Histórico de viagem</NavLink>
+                        <NavLink to="/ride/:customer_id">Histórico de viagem</NavLink>
                     </li>
                 </ul>
             </nav>

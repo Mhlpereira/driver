@@ -1,5 +1,4 @@
 import { Route, Routes } from 'react-router-dom';
-import './App.css';
 import { Navbar } from './component/navbar';
 import { Estimate } from './pages/estimate';
 import { Confirm } from './pages/confirm';
