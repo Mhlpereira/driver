@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { CorridaDTO } from "../interfaces/corridaDTO"
-import { useForm, SubmitHandler } from "react-hook-form";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 
 export const Estimate = () => {
@@ -11,6 +11,8 @@ export const Estimate = () => {
         origin: "",
         destination: ""
     });
+
+    const navigate = useNavigate();
 
     const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => { 
         const { name, value } = e.target;
@@ -22,9 +24,10 @@ export const Estimate = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await axios.post("http://localhost:8080/ride", corridaDto);
+            const response = await axios.post("http://localhost:8080/ride/estimate", corridaDto);
             console.log("Resposta do backend:", response.data);
-        } catch (error) {
+            navigate("/ride/confirm", {state:{corridaDto: response.data}})
+        } catch (error) {   
             console.error("Erro ao enviar os dados:", error);
         }
     };
@@ -44,12 +47,11 @@ export const Estimate = () => {
                     </label>
 
                     <label>Destino
-                        <input type="text" name="origin" id="origin" value={corridaDto.destination}
+                        <input type="text" name="destination" id="destination" value={corridaDto.destination}
                          onChange={handleFormChange} required></input>
                     </label>
 
-                    <button>Confirmar</button>
-                    <button>Limpar</button>
+                    <button type="submit" >Confirmar</button>
                 </form>
             </div>
         </>

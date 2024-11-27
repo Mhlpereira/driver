@@ -16,7 +16,16 @@ export class RideController {
         this.rideService = rideService;
     }
 
+    async estimateRide(req: Request, res: Response) : Promise<Response>{
+        const { customer_id, origin, destination, driver_id } = req.body;
 
+        if (!customer_id || !origin || !destination ) {
+            return res.status(400).json({ error: "Dados incompletos" });
+        }
+
+        const createRideDTO = new CreateRideDTO(customer_id, origin, destination);
+        res.status(200).send({ sucess: true , message:"Operação realizada com sucesso" , data: createRideDTO})
+    }
 
     async ConfirmRide(req: Request, res: Response): Promise<Response> {
         try {
@@ -29,11 +38,18 @@ export class RideController {
                 })
             }
 
-            const driver = await this.driverService.getDriverById(createRideDTO.driverId);
+            const driver = await this.driverService.getDriverById(createRideDTO.driver_id);
             if (!driver) {
                 return res.status(404).json({
                     error_code: 'DRIVER_NOT_FOUND',
                     error_description: 'Motorista não encontrado'
+                })
+            }
+            const distance = await this.rideService.calculateDistanceAndTime(createRideDTO.origin, createRideDTO.destination)
+            if(driver.minKm < distance.distance){
+                return res.status(406).json({
+                    "error_code": "INVALID_DISTANCE",
+                    "error_description": "Quilometragem inválida para o motorista."
                 })
             }
 
@@ -53,8 +69,8 @@ export class RideController {
         try {
             const { customerId, driverId }: CustomerRidesDTO = req.body;
 
-            const list = driverId ? this.rideService.getAllRidesByUserAndDriver(customerId, driverId)
-                : this.rideService.getAllRidesByUser(customerId);
+            const list = await this.rideService.getAllRidesByUserAndDriver(customerId, driverId)
+                // : this.rideService.getAllRidesByUser(customerId);
 
 
             const driver = await this.driverService.getDriverById(driverId);
@@ -65,7 +81,7 @@ export class RideController {
                 })
             }
 
-            if ((await list).rides === 0) {
+            if (list.length === 0) {
                 return res.status(400).json({
                     error_code: 'NO_RIDES_FOUND',
                     error_description: 'Nenhum registro encontrado'
@@ -78,6 +94,23 @@ export class RideController {
             return res.status(400).json({
                 error_code: "LIST_ERROR",
                 error_description: 'Erro ao listar as corridas'
+            })
+        }
+    }
+
+    async listAllDrivers(req: Request, res: Response): Promise<Response> {
+        try {
+            const { origin, destination, customer_id}: CreateRideDTO = req.body;
+
+            const distanceTime = await this.rideService.calculateDistanceAndTime(origin, destination);
+            const drivers = await this.driverService.listAllDrivers(distanceTime);
+
+            return res.status(200).json({ success: true, description: "Operação realizado com sucesso" ,data: drivers })
+        } catch (e) {
+            console.error("Error ao listar os motoristas", e.message);
+            return res.status(500).json({
+                error_code: "INTERNAL_SERVER_ERROR",
+                error_description: "Um erro inexperado aconteceu"
             })
         }
     }

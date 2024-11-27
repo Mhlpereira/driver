@@ -16,7 +16,7 @@ datasource db {
 model customer {
   customer_id  Int  @id @default(autoincrement())
   name String 
-  rides Ride[]
+  rides ride[]
 }
 
 model driver{
@@ -27,7 +27,7 @@ model driver{
   rating String
   tax Float
   minKm Int
-  rides Ride[]
+  rides ride[]
 }
 
 model ride{
@@ -36,11 +36,12 @@ model ride{
   customer_id Int
   origin String
   destination String
+  distance Int
   driver_id Int
   duration Int
   value Float
 
-  customer Customer @relation(fields: [customer_id], references: [customer_id])
-  driver Driver     @relation(fields: [driver_id], references: [driver_id])
+  customer customer @relation(fields: [customer_id], references: [customer_id])
+  driver driver     @relation(fields: [driver_id], references: [driver_id])
 }
 

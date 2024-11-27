@@ -3,8 +3,9 @@ import { NotMatch } from "../../decorator/NotMatch.decorator";
 
 export class CreateRideDTO {
 
+
     @IsNotEmpty({ message: "O ID de usuário não pode estar vazio!" })
-    customerId: number;
+    customer_id: number;
 
     @IsNotEmpty({ message: "O ID de usuário não pode estar vazio!" })
     origin: string;
@@ -13,7 +14,13 @@ export class CreateRideDTO {
     @NotMatch('origin', { message: "O local de destino não pode ser igual ao local de origem!" })
     destination: string;
 
-    @IsNotEmpty({ message: "O ID de usuário não pode estar vazio!" })
-    driverId: number;
+    driver_id?: number;
+
+    constructor(customer_id: number, origin: string, destination: string, driver_id?: number){
+        this.customer_id = customer_id,
+        this.origin = origin,
+        this.destination = destination,
+        this.driver_id = driver_id
+    }
 
 }
