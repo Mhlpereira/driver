@@ -1,22 +1,28 @@
-version: '3.9'
 services:
   app:
-    build:
-      context: .
-    ports:
-      - "5432:5432"
-    environment:
-      DATABASE_URL: "postgresql://user:123456@db:5432/dbdriver"
-    depends_on:
-      - db
+   image: node:20
+   working_dir: /app
+   volumes:
+    - .:/app
+   ports:
+      - "8080:8080"
+   environment:
+       DATABASE_URL: "postgresql://user:123456@postgres:5432/db"
+   depends_on:
+      - postgres
+   command: >
+      sh -c "./wait-for-it.sh postgres:5432 -- npm run migrate:deploy && npm run generate && npx prisma db seed"
 
-  db:
+
+  postgres:
     image: postgres:15
     restart: on-failure
+    ports:
+      - 5432:5432
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: 123456
-      POSTGRES_DB: dbdriver
+      POSTGRES_DB: db
     volumes:
       - db_data:/var/lib/postgresql/data
 
@@ -26,10 +32,10 @@ services:
       - .:/app
     working_dir: /app
     environment:
-      DATABASE_URL: "postgresql://user:123456@db:5432/dbdriver"
+      DATABASE_URL: "postgresql://user:123456@postgres:5432/db"
     depends_on:
-      - db
-    entrypoint: ["sh", "-c", "npx prisma migrate deploy && tsx prisma/seed.ts"]
+      - postgres
+    entrypoint: ["sh", "-c", "npm run migrate:deploy && npm run generate && npx prisma/seed.ts"]
 
 volumes:
   db_data:

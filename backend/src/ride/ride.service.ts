@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { GeocodeServive } from "../google-api/geocode";
 import { DistanceMatrix } from "../google-api/distanceMatrix";
+import { CustomerRides } from "../types";
 
 const prisma = new PrismaClient();
 
@@ -119,12 +120,16 @@ export class RideService{
             
             const customerRides = await prisma.ride.findMany({
                 where : {
-                    driver_id : driver_id,
+                    customer_id : customer_id,
                     ...(driver_id && {driver_id : driver_id})
                 },
                 include : {
-                    driver: true,
-                    customer: true
+                    driver: {
+                        select:{
+                            driver_id: true,
+                            name:true
+                        }
+                    }
                 },
                 orderBy:{
                     date: "desc"
@@ -132,7 +137,7 @@ export class RideService{
                 
             });
 
-            const resultado = { 
+            const resultado: CustomerRides = { 
                 customer_id: customer_id,
                 rides: customerRides.map((rides)=>({
                 ride_id: rides.ride_id,
@@ -142,7 +147,7 @@ export class RideService{
                 distance: rides.distance,
                 duration: rides.duration,
                 driver: {
-                    id: rides.driver.driver_id,
+                    driver_id: rides.driver.driver_id,
                     name: rides.driver.name,
                 },
                 value: rides.value

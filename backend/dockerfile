@@ -1,0 +1,25 @@
+# Usa uma imagem base do Node.js
+FROM node:20
+
+# Define o diretório de trabalho dentro do contêiner
+WORKDIR /app
+
+# Copia apenas os arquivos de dependências para evitar reconstruções desnecessárias
+COPY package.json package-lock.json ./
+
+# Instala as dependências
+RUN npm install
+
+# Copia o restante dos arquivos do projeto
+COPY . .
+
+# Exponha a porta correta usada pelo seu backend (exemplo: 8080)
+EXPOSE 8080
+
+ENTRYPOINT ["./docker-entrypoint.sh"]
+
+# Configura a variável de ambiente para o banco de dados
+ENV DATABASE_URL=postgresql://user:123456@db:5432/dbdriver
+
+# Comando de inicialização do servidor
+CMD ["npm", "start"]

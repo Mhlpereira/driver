@@ -16,5 +16,7 @@ const rideController = new RideController(driverService, rideService);
 
 router.post("ride/estimate",async (req, res) => {await rideController.estimateRide(req,res)});
 router.patch("ride/confirm",async(req, res) => {await rideController.ConfirmRide(req, res)});
-router.get("ride/confirm", async(req, res) => {await rideController.listAllDrivers(req, res)}) 
-router.get("ride/:customer_id",async(req, res) => {await rideController.getAllRidesByUser(req, res)})
+router.get("ride/confirm", async(req, res) => {await rideController.listAllDrivers(req, res)}) ;
+router.get("ride/:customer_id",async(req, res) => {await rideController.getAllRidesByUser(req, res)});
+
+export default router;

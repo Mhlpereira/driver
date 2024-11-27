@@ -81,7 +81,7 @@ export class RideController {
                 })
             }
 
-            if (list.length === 0) {
+            if (list.rides.length === 0) {
                 return res.status(400).json({
                     error_code: 'NO_RIDES_FOUND',
                     error_description: 'Nenhum registro encontrado'
