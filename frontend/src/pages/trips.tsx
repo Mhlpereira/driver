@@ -1,7 +1,7 @@
 import axios from "axios"
 import {  useState } from "react"
 
-export const ListingTrip = async () => {
+export const Trip = () => {
 
 
     const [customerId, setCustomerId] = useState("");

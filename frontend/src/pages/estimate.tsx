@@ -12,6 +12,7 @@ export const Estimate = () => {
         destination: ""
     });
 
+
     const navigate = useNavigate();
 
     const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => { 
@@ -25,8 +26,13 @@ export const Estimate = () => {
         e.preventDefault();
         try {
             const response = await axios.post("http://localhost:8080/ride/estimate", corridaDto);
+            console.log(corridaDto);
             console.log("Resposta do backend:", response.data);
-            navigate("/ride/confirm", {state:{corridaDto: response.data}})
+            navigate("/ride/confirm", {state:{
+                origin: corridaDto.origin,
+                destination: corridaDto.destination,
+                customer_id: corridaDto.customer_id
+            }})
         } catch (error) {   
             console.error("Erro ao enviar os dados:", error);
         }

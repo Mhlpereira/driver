@@ -3,13 +3,10 @@ import { StaticMap } from "../component/map";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-export const Confirm = async () => {
-
+export const Confirm = () => {
     const location = useLocation();
     const { origin, destination, customer_id } = location.state || {};
     const [drivers, setDrivers] = useState<any[]>([]);
-
-
     const [corrida, setCorrida] = useState({
         customer_id: customer_id,
         origin: origin,
@@ -17,16 +14,17 @@ export const Confirm = async () => {
         driver_id: "",
     });
 
-    const listDrivers = async () => {
+    const listDrivers = async (origin: string, destination: string) => {
         try {
-            const response = await axios.get("http://localhost:8080/rides/listDrivers");
+            const response = await axios.post('http://localhost:8080/ride/confirm',
+                {
+                    origin: origin,
+                    destination: destination,
+                });
             setDrivers(response.data);
             console.log("Motoristas disponíveis:", response.data);
-        } catch (error) {
-            console.error("Erro ao listar motoristas:", error);
-        }
+        } catch (error) { console.error("Erro ao listar motoristas:", error); }
     };
-
     const handleDriverId = (driver_id: string) => {
         setCorrida({ ...corrida, driver_id });
     };
@@ -41,8 +39,8 @@ export const Confirm = async () => {
     };
 
     useEffect(() => {
-        listDrivers();
-    }, []);
+        listDrivers(origin, destination);
+    }, [destination, origin]);
 
     return (
         <>
@@ -51,21 +49,31 @@ export const Confirm = async () => {
                 <div>
                     <h1>Mapa de Rota</h1>
                     <StaticMap origin={`origin: ${origin}`} destination={`destination: ${destination}`} />
-                    <form>
-                        <span>Motorista id
-                            <ul>
-                                {drivers.map((driver)=> (
+                    <span>Motorista id
+                        <ul>
+                            {drivers.length > 0 ? (
+                                drivers.map((driver) => (
                                     <li key={driver.id}>
-                                        <button onClick={() => handleDriverId(driver.id)}></button>
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                handleDriverId(driver.id);
+                                            }}
+                                        >
+                                            Escolher motorista {driver.name}
+                                        </button><span>{driver.description}{driver.car}{driver.rating}{driver.value}</span>
                                     </li>
-                                ))}
-                            </ul>
-                        </span>
-                    </form>
+                                ))
+                            ) : (
+                                <p>Nenhum motorista disponível no momento.</p>
+                            )}
 
+                        </ul>
+                    </span>
                     <button onClick={handleCriarCorrida}>Pedir motorista</button>
                 </div>
             </div>
         </>
-    )
+    );
 }
