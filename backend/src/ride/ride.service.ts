@@ -3,13 +3,13 @@ import { CreateRideDTO } from "./DTO/create-ride-DTO";
 import { DriverService } from "../driver/driver.service";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { GeocodeServive } from "../google-api/geocode";
+import { GeocodeService } from "../google-api/geocode";
 import { DistanceMatrix } from "../google-api/distanceMatrix";
 import { CustomerRides } from "../types";
 
 const prisma = new PrismaClient();
 
-const geocode = new GeocodeServive();
+const geocode = new GeocodeService();
 const matrix = new DistanceMatrix();
 
 
@@ -18,10 +18,7 @@ export class RideService{
     constructor(private driverService: DriverService) { }
 
     async calculateDistanceAndTime(origin: string, destination: string){
-        const addressO = await geocode.adressConvert(origin);
-        const addressD = await geocode.adressConvert(destination);
-
-        const distanceTime = matrix.rideDistance(addressO, addressD);
+        const distanceTime = matrix.rideDistance(origin, destination);
         return distanceTime;
     }
 
@@ -29,6 +26,8 @@ export class RideService{
        
         try{
             const { origin, destination, driver_id, customer_id } = createRideDTO;
+
+            console.log('Dados recebidos:', { customer_id, origin, destination });
 
             const distanceTime =  await this.calculateDistanceAndTime(origin, destination);
 

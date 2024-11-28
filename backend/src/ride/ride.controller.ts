@@ -19,10 +19,11 @@ export class RideController {
     async estimateRide(req: Request, res: Response) : Promise<Response>{
         const { customer_id, origin, destination, driver_id } = req.body;
 
-        if (!customer_id || !origin || !destination ) {
-            return res.status(400).json({ error: "Dados incompletos" });
+        if ( !origin || !destination || !customer_id ) {
+           
+            return res.status(400).json({ error: "Dados incompletos destination" });
         }
-
+      
         const createRideDTO = new CreateRideDTO(customer_id, origin, destination);
         res.status(200).send({ sucess: true , message:"Operação realizada com sucesso" , data: createRideDTO})
     }
@@ -30,7 +31,7 @@ export class RideController {
     async ConfirmRide(req: Request, res: Response): Promise<Response> {
         try {
             const createRideDTO: CreateRideDTO = req.body;
-
+            console.log(createRideDTO, "erro aqui!");
             if (!createRideDTO.origin || !createRideDTO.destination) {
                 return res.status(400).json({
                     error_code: "INVALID_DATA",
@@ -70,8 +71,6 @@ export class RideController {
             const { customerId, driverId }: CustomerRidesDTO = req.body;
 
             const list = await this.rideService.getAllRidesByUserAndDriver(customerId, driverId)
-                // : this.rideService.getAllRidesByUser(customerId);
-
 
             const driver = await this.driverService.getDriverById(driverId);
             if (!driver) {
@@ -100,10 +99,11 @@ export class RideController {
 
     async listAllDrivers(req: Request, res: Response): Promise<Response> {
         try {
-            const { origin, destination, customer_id}: CreateRideDTO = req.body;
+            const { origin, destination} = req.body;
 
             const distanceTime = await this.rideService.calculateDistanceAndTime(origin, destination);
             const drivers = await this.driverService.listAllDrivers(distanceTime);
+            console.log(drivers, 'teste')
 
             return res.status(200).json({ success: true, description: "Operação realizado com sucesso" ,data: drivers })
         } catch (e) {
