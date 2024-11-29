@@ -8,7 +8,9 @@ nav{
     justify-content: space-between;
     align-items: center;
     background-color: darkblue;
-    position: sticky;
+    position: fixed;
+    width: 100%;
+    z-index: 50;
     top: 0;
 }
 

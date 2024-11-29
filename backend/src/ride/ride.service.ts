@@ -80,39 +80,6 @@ export class RideService{
     }
     
 
-    // async getAllRidesByUser(customerId: number){
-    //     try{
-            
-    //         const customerRides = await prisma.ride.findMany({
-    //             where : {
-    //                 customer_id : customerId,
-    //                     },
-    //                     include: drive
-    //         });
-
-    //         const formattedRides = customerRides.map((ride) => ({ 
-    //             customer_id: ride.customer_id,
-    //             date: format(new Date(ride.date), 'dd/MM/yyyy HH:mm:ss', { locale: ptBR }),
-    //             origin: ride.origin,
-    //             destination: ride.destination,
-    //             distance: ride.distance,
-    //             duration: ride.duration,
-    //             driver: {
-    //                 id: ride.driver.driver_id,
-    //                 name: ride.driver.name,
-    //             },
-    //             value: ride.value,
-    //         }));
-
-    //         return {
-    //             customer_id: customerId,
-    //             rides: formattedRides,
-    //         };
-    //     } catch(e){
-    //         console.error("Erro ao buscar corrida de usuários", e.message);
-    //         throw new Error("Não foi possível buscar corrida");
-    //     }
-    // }
 
     async getAllRidesByUserAndDriver(customer_id: number, driver_id: number){
         try{

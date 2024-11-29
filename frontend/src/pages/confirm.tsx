@@ -16,11 +16,13 @@ export const Confirm = () => {
 
     const listDrivers = async (origin: string, destination: string) => {
         try {
+            console.log(origin, destination, 'dentro do try')
             const response = await axios.post('http://localhost:8080/ride/confirm',
                 {
                     origin: origin,
                     destination: destination,
                 });
+                console.log(response.data);
             setDrivers(response.data);
             console.log("Motoristas disponíveis:", response.data);
         } catch (error) { console.error("Erro ao listar motoristas:", error); }
@@ -39,6 +41,7 @@ export const Confirm = () => {
     };
 
     useEffect(() => {
+        console.log(origin,destination, 'use effect')
         listDrivers(origin, destination);
     }, [destination, origin]);
 
@@ -50,26 +53,25 @@ export const Confirm = () => {
                     <h1>Mapa de Rota</h1>
                     <StaticMap origin={`origin: ${origin}`} destination={`destination: ${destination}`} />
                     <span>Motorista id
-                        <ul>
-                            {drivers.length > 0 ? (
-                                drivers.map((driver) => (
-                                    <li key={driver.id}>
-                                        <button
-                                            type="button"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                handleDriverId(driver.id);
-                                            }}
-                                        >
-                                            Escolher motorista {driver.name}
-                                        </button><span>{driver.description}{driver.car}{driver.rating}{driver.value}</span>
-                                    </li>
-                                ))
-                            ) : (
-                                <p>Nenhum motorista disponível no momento.</p>
-                            )}
-
-                        </ul>
+                        {drivers.length > 0 ? (
+                            drivers.map((driver) => {
+                                return (
+                                <div key={driver.id}>
+                                    <div>{driver.name}</div>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            handleDriverId(driver.id);
+                                        }}
+                                    >
+                                        Escolher motorista {driver.name}
+                                    </button><span>{driver.description}{driver.car}{driver.rating}{driver.value}</span>
+                                </div>)
+                            })
+                        ) : (
+                            <p>Nenhum motorista disponível no momento.</p>
+                        )}
                     </span>
                     <button onClick={handleCriarCorrida}>Pedir motorista</button>
                 </div>

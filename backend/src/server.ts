@@ -17,7 +17,7 @@ app.use(cors({ origin: '*' }));
 app.use(express.json());
 
 app.post("/ride/estimate", (req, res) => {rideController.estimateRide(req, res)});
-app.get("/ride/confirm", (req, res) => {rideController.listAllDrivers(req, res)});
+app.post("/ride/confirm", (req, res) => {rideController.listAllDrivers(req, res)});
 app.get("/ride/:customer_id",(req, res) => {rideController.getAllRidesByUser(req, res)});
 app.patch("/ride/confirm",(req, res) => {rideController.ConfirmRide(req, res)});
 

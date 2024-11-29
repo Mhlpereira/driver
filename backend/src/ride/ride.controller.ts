@@ -100,8 +100,9 @@ export class RideController {
     async listAllDrivers(req: Request, res: Response): Promise<Response> {
         try {
             const { origin, destination} = req.body;
-
+            console.log(origin, destination, 'começo do pedido!')
             const distanceTime = await this.rideService.calculateDistanceAndTime(origin, destination);
+            console.log(distanceTime, 'depois do metodo calcular corrida')
             const drivers = await this.driverService.listAllDrivers(distanceTime);
             console.log(drivers, 'teste')
 
