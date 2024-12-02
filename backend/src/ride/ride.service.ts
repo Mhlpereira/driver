@@ -3,13 +3,11 @@ import { CreateRideDTO } from "./DTO/create-ride-DTO";
 import { DriverService } from "../driver/driver.service";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { GeocodeService } from "../google-api/geocode";
 import { DistanceMatrix } from "../google-api/distanceMatrix";
 import { CustomerRides } from "../types";
 
 const prisma = new PrismaClient();
 
-const geocode = new GeocodeService();
 const matrix = new DistanceMatrix();
 
 
